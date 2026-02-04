@@ -4,6 +4,7 @@ import com.system_alunos.Sistema_alunos.dtos.AlunoRequest;
 import com.system_alunos.Sistema_alunos.dtos.AlunoResponse;
 import com.system_alunos.Sistema_alunos.model.Aluno;
 import com.system_alunos.Sistema_alunos.service.AlunoService;
+import jakarta.validation.Valid;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +23,8 @@ public class AlunoController {
     }
 
     @PostMapping
-    public ResponseEntity<?> cadastrar(@RequestBody AlunoRequest req){
-        boolean ok = service.cadastrar(req.nome, req.nota);
-
-        if (!ok) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Aluno ja existe");
-        }
+    public ResponseEntity<?> cadastrar(@Valid @RequestBody AlunoRequest req){
+        service.cadastrar(req.nome, req.nota);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
