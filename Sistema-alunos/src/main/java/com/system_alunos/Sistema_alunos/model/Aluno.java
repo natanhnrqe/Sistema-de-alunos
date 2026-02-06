@@ -1,8 +1,19 @@
 package com.system_alunos.Sistema_alunos.model;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Aluno {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id ;
+
     private String nome;
     private double nota;
+
+    public Aluno() {
+    }
 
     public Aluno(String nome, double nota) {
         this.nome = nome;

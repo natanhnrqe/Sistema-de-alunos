@@ -3,6 +3,7 @@ package com.system_alunos.Sistema_alunos.service;
 import com.system_alunos.Sistema_alunos.exceptions.AlunoAlreadyExistException;
 import com.system_alunos.Sistema_alunos.exceptions.AlunoNotFoundException;
 import com.system_alunos.Sistema_alunos.model.Aluno;
+import com.system_alunos.Sistema_alunos.repository.AlunoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -10,39 +11,38 @@ import java.util.*;
 @Service
 public class AlunoService {
 
-    private Map<String, Aluno> alunos = new HashMap<>();
+    private final AlunoRepository repository;
 
-   public void cadastrar(String nome, double nota){
-       String chave = nome.toLowerCase();
-       if (alunos.containsKey(chave)) {
+    public AlunoService(AlunoRepository repository) {
+        this.repository = repository;
+    }
+
+    public void cadastrar(String nome, double nota){
+       if (repository.existsByNomeIgnoreCase(nome)) {
            throw new AlunoAlreadyExistException("Aluno ja existe");
        }
+        repository.save(new Aluno(nome, nota));
 
-       alunos.put(chave, new Aluno(nome, nota));
    }
 
     public List<Aluno> listar(){
-       return new ArrayList<>(alunos.values());
+       return repository.findAll();
     }
 
     public Aluno buscar(String nome){
-        Aluno aluno = alunos.get(nome.toLowerCase());
 
-        if (aluno == null){
-            throw new AlunoNotFoundException("Aluno nao encontrado");
-        }
-        return aluno;
+        return repository.findByNomeIgnoreCase(nome)
+        .orElseThrow(() -> new AlunoNotFoundException("Aluno nao encontrado"));
     }
 
     public void atualizarNota(String nome, double nota){
-       Aluno a = buscar(nome);
-       a.setNota(nota);
+       Aluno aluno = buscar(nome);
+       aluno.setNota(nota);
+       repository.save(aluno);
     }
 
     public void remover(String nome){
-        Aluno aluno = alunos.remove(nome.toLowerCase());
-        if (aluno == null){
-            throw new AlunoNotFoundException("Aluno nao encontrado");
-        }
+        Aluno aluno = buscar(nome);
+       repository.delete(aluno);
     }
 }
