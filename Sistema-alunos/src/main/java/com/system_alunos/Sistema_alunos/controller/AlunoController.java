@@ -36,35 +36,27 @@ public class AlunoController {
     }
 
     @GetMapping("/{nome}")
-    public ResponseEntity<AlunoResponse> buscar(@PathVariable String nome) {
-        return service.buscar(nome).map(a -> ResponseEntity.ok(
-                new AlunoResponse(
-                        a.getNome(),
-                        a.getNota(),
-                        a.getSituacao()
-                )
-        )).orElse(ResponseEntity.notFound().build());
-    }
+    public AlunoResponse buscar(@PathVariable String nome) {
+        Aluno aluno = service.buscar(nome);
+
+        return new AlunoResponse(
+                aluno.getNome(),
+                aluno.getNota(),
+                aluno.getSituacao()
+        );
+        }
 
     @PutMapping("/{nome}")
     public ResponseEntity<?> atualizar(@PathVariable String nome, @RequestBody AlunoRequest req){
-        boolean ok = service.atualizarNota(nome, req.nota);
+        service.atualizarNota(nome, req.nota);
 
-        if (!ok) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{nome}")
     public ResponseEntity<?> remover(@PathVariable String nome) {
-        boolean ok = service.remover(nome);
+        service.remover(nome);
 
-        if (!ok) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,6 +1,7 @@
 package com.system_alunos.Sistema_alunos.service;
 
 import com.system_alunos.Sistema_alunos.exceptions.AlunoAlreadyExistException;
+import com.system_alunos.Sistema_alunos.exceptions.AlunoNotFoundException;
 import com.system_alunos.Sistema_alunos.model.Aluno;
 import org.springframework.stereotype.Service;
 
@@ -24,20 +25,24 @@ public class AlunoService {
        return new ArrayList<>(alunos.values());
     }
 
-    public Optional<Aluno> buscar(String nome){
-        return Optional.ofNullable(alunos.get(nome.toLowerCase()));
+    public Aluno buscar(String nome){
+        Aluno aluno = alunos.get(nome.toLowerCase());
+
+        if (aluno == null){
+            throw new AlunoNotFoundException("Aluno nao encontrado");
+        }
+        return aluno;
     }
 
-    public boolean atualizarNota(String nome, double nota){
-       Aluno a = alunos.get(nome.toLowerCase());
-
-       if (a == null) return false;
-
+    public void atualizarNota(String nome, double nota){
+       Aluno a = buscar(nome);
        a.setNota(nota);
-       return true;
     }
 
-    public boolean remover(String nome){
-        return alunos.remove(nome.toLowerCase()) != null;
+    public void remover(String nome){
+        Aluno aluno = alunos.remove(nome.toLowerCase());
+        if (aluno == null){
+            throw new AlunoNotFoundException("Aluno nao encontrado");
+        }
     }
 }
