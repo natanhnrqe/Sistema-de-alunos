@@ -1,0 +1,5 @@
+CREATE TABLE aluno (
+     id BIGSERIAL PRIMARY KEY,
+     nome VARCHAR(255),
+     nota DOUBLE PRECISION NOT NULL
+);
