@@ -47,7 +47,7 @@ public class AlunoController {
         }
 
     @PutMapping("/{nome}")
-    public ResponseEntity<?> atualizar(@PathVariable String nome, @RequestBody AlunoRequest req){
+    public ResponseEntity<?> atualizar(@PathVariable String nome,@Valid @RequestBody AlunoRequest req){
         service.atualizarNota(nome, req.nota);
 
         return ResponseEntity.noContent().build();

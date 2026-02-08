@@ -34,6 +34,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
+    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+    public ResponseEntity<?> handleDataIntegrity(org.springframework.dao.DataIntegrityViolationException ex){
+        return ResponseEntity.badRequest().body(Map.of(
+                "message", "Erro de validacao",
+                "fielderrors", Map.of("nota", "Nota deve estar entre 0 e 10")
+        ));
+    }
+
     //404
     @ExceptionHandler(AlunoNotFoundException.class)
     public ResponseEntity<ApiError> handleNotFound(AlunoNotFoundException ex){
