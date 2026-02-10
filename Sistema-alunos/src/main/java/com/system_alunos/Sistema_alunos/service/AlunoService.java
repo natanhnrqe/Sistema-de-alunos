@@ -29,20 +29,20 @@ public class AlunoService {
        return repository.findAll();
     }
 
-    public Aluno buscar(String nome){
+    public Aluno buscar(Long id){
 
-        return repository.findByNomeIgnoreCase(nome)
+        return repository.findById(id)
         .orElseThrow(() -> new AlunoNotFoundException("Aluno nao encontrado"));
     }
 
-    public void atualizarNota(String nome, double nota){
-       Aluno aluno = buscar(nome);
+    public void atualizarNota(Long id, double nota){
+       Aluno aluno = buscar(id);
        aluno.setNota(nota);
        repository.save(aluno);
     }
 
-    public void remover(String nome){
-        Aluno aluno = buscar(nome);
+    public void remover(Long id){
+        Aluno aluno = buscar(id);
        repository.delete(aluno);
     }
 }

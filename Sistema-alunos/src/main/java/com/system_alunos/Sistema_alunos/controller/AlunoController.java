@@ -1,5 +1,6 @@
 package com.system_alunos.Sistema_alunos.controller;
 
+import com.system_alunos.Sistema_alunos.dtos.AlunoNotaRequest;
 import com.system_alunos.Sistema_alunos.dtos.AlunoRequest;
 import com.system_alunos.Sistema_alunos.dtos.AlunoResponse;
 import com.system_alunos.Sistema_alunos.model.Aluno;
@@ -31,31 +32,32 @@ public class AlunoController {
 
     @GetMapping
     public List<AlunoResponse> listar() {
-        return service.listar().stream().map(a -> new AlunoResponse(a.getNome(), a.getNota(),
+        return service.listar().stream().map(a -> new AlunoResponse(a.getId(),a.getNome(), a.getNota(),
                 a.getSituacao())).toList();
     }
 
-    @GetMapping("/{nome}")
-    public AlunoResponse buscar(@PathVariable String nome) {
-        Aluno aluno = service.buscar(nome);
+    @GetMapping("/{id}")
+    public AlunoResponse buscar(@PathVariable Long id) {
+        Aluno aluno = service.buscar(id);
 
         return new AlunoResponse(
+                aluno.getId(),
                 aluno.getNome(),
                 aluno.getNota(),
                 aluno.getSituacao()
         );
         }
 
-    @PutMapping("/{nome}")
-    public ResponseEntity<?> atualizar(@PathVariable String nome,@Valid @RequestBody AlunoRequest req){
-        service.atualizarNota(nome, req.nota);
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizar(@PathVariable Long id,@Valid @RequestBody AlunoNotaRequest req){
+        service.atualizarNota(id, req.nota);
 
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{nome}")
-    public ResponseEntity<?> remover(@PathVariable String nome) {
-        service.remover(nome);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> remover(@PathVariable Long id) {
+        service.remover(id);
 
         return ResponseEntity.noContent().build();
     }
