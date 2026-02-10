@@ -36,10 +36,19 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
     public ResponseEntity<?> handleDataIntegrity(org.springframework.dao.DataIntegrityViolationException ex){
-        return ResponseEntity.badRequest().body(Map.of(
-                "message", "Erro de validacao",
-                "fielderrors", Map.of("nota", "Nota deve estar entre 0 e 10")
-        ));
+        String msg = "Violação de integridade no banco.";
+
+        Throwable cause = ex.getMostSpecificCause();
+        if (cause != null && cause.getMessage() != null && cause.getMessage().contains("chk_aluno_nota_range")) {
+            msg = "Nota deve estar entre 0 e 10.";
+        }
+        ApiError error = new ApiError(
+                HttpStatus.NOT_FOUND.value(),
+                "Not Found",
+                ex.getMessage()
+        );
+
+        return ResponseEntity.badRequest().body(error);
     }
 
     //404
