@@ -3,14 +3,18 @@ package com.system_alunos.Sistema_alunos.controller;
 import com.system_alunos.Sistema_alunos.dtos.AlunoNotaRequest;
 import com.system_alunos.Sistema_alunos.dtos.AlunoRequest;
 import com.system_alunos.Sistema_alunos.dtos.AlunoResponse;
+import com.system_alunos.Sistema_alunos.dtos.PageResponse;
 import com.system_alunos.Sistema_alunos.model.Aluno;
 import com.system_alunos.Sistema_alunos.service.AlunoService;
 import jakarta.validation.Valid;
 import org.apache.coyote.Response;
+import org.springframework.data.domain.Page;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @RestController
@@ -31,9 +35,27 @@ public class AlunoController {
     }
 
     @GetMapping
-    public List<AlunoResponse> listar() {
-        return service.listar().stream().map(a -> new AlunoResponse(a.getId(),a.getNome(), a.getNota(),
-                a.getSituacao())).toList();
+    public PageResponse<AlunoResponse> listar(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) Double notaMin,
+            @PageableDefault(size = 5, sort = "id") Pageable pageable) {
+
+        if (pageable.getPageSize() > 20){
+        throw new IllegalArgumentException("Tamanho maximo da pagina é 20");
+        }
+
+        Page<AlunoResponse> page = service.listarComFiltro(nome, notaMin, pageable).map(a -> new AlunoResponse(a.getId(),a.getNome(), a.getNota(),
+                a.getSituacao()));
+
+        return new PageResponse<>(
+                page.getContent(),
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages(),
+                page.hasNext(),
+                page.hasPrevious()
+        );
     }
 
     @GetMapping("/{id}")
@@ -61,4 +83,6 @@ public class AlunoController {
 
         return ResponseEntity.noContent().build();
     }
+
+
 }
