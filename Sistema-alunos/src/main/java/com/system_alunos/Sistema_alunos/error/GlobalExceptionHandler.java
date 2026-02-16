@@ -2,6 +2,7 @@ package com.system_alunos.Sistema_alunos.error;
 
 import com.system_alunos.Sistema_alunos.exceptions.AlunoAlreadyExistException;
 import com.system_alunos.Sistema_alunos.exceptions.AlunoNotFoundException;
+import com.system_alunos.Sistema_alunos.exceptions.RecursoNaoEncontradoException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,8 +53,8 @@ public class GlobalExceptionHandler {
     }
 
     //404
-    @ExceptionHandler(AlunoNotFoundException.class)
-    public ResponseEntity<ApiError> handleNotFound(AlunoNotFoundException ex){
+    @ExceptionHandler(RecursoNaoEncontradoException.class)
+    public ResponseEntity<ApiError> handleNotFound(RecursoNaoEncontradoException ex){
 
         ApiError error = new ApiError(
                 HttpStatus.NOT_FOUND.value(),
