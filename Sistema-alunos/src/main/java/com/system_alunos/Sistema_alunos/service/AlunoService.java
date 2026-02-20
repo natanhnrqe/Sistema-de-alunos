@@ -2,8 +2,11 @@ package com.system_alunos.Sistema_alunos.service;
 
 import com.system_alunos.Sistema_alunos.exceptions.AlunoAlreadyExistException;
 import com.system_alunos.Sistema_alunos.exceptions.AlunoNotFoundException;
+import com.system_alunos.Sistema_alunos.exceptions.RecursoNaoEncontradoException;
 import com.system_alunos.Sistema_alunos.model.Aluno;
+import com.system_alunos.Sistema_alunos.model.Curso;
 import com.system_alunos.Sistema_alunos.repository.AlunoRepository;
+import com.system_alunos.Sistema_alunos.repository.CursoRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
@@ -14,16 +17,22 @@ import java.util.*;
 public class AlunoService {
 
     private final AlunoRepository repository;
+    private final CursoRepository cursoRepository;
 
-    public AlunoService(AlunoRepository repository) {
+    public AlunoService(AlunoRepository repository, CursoRepository cursoRepository) {
         this.repository = repository;
+        this.cursoRepository = cursoRepository;
     }
 
-    public void cadastrar(String nome, double nota){
+    public void cadastrar(String nome, double nota, Long cursoId){
        if (repository.existsByNomeIgnoreCase(nome)) {
            throw new AlunoAlreadyExistException("Aluno ja existe");
        }
-        repository.save(new Aluno(nome, nota));
+
+       Curso curso = cursoRepository.findById(cursoId).
+               orElseThrow(() -> new RecursoNaoEncontradoException("Curso nao encontrado"));
+
+        repository.save(new Aluno(nome, nota, curso));
 
    }
 

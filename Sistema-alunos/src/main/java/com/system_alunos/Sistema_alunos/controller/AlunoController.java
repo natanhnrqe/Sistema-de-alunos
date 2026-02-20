@@ -29,7 +29,7 @@ public class AlunoController {
 
     @PostMapping
     public ResponseEntity<?> cadastrar(@Valid @RequestBody AlunoRequest req){
-        service.cadastrar(req.nome, req.nota);
+        service.cadastrar(req.nome, req.nota, req.cursoId);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

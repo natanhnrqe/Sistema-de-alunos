@@ -9,15 +9,23 @@ public class Aluno {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id ;
 
+    @Column(nullable = false)
     private String nome;
+
+    @Column(nullable = false)
     private double nota;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "curso_id", nullable = false)
+    private Curso curso;
 
     public Aluno() {
     }
 
-    public Aluno(String nome, double nota) {
+    public Aluno(String nome, double nota, Curso curso) {
         this.nome = nome;
         this.nota = nota;
+        this.curso = curso;
     }
 
     public String getNome() {
@@ -46,5 +54,9 @@ public class Aluno {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Curso getCurso() {
+        return curso;
     }
 }
