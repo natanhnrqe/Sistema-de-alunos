@@ -1,8 +1,11 @@
 package com.system_alunos.Sistema_alunos;
 
 import com.system_alunos.Sistema_alunos.exceptions.AlunoNotFoundException;
+import com.system_alunos.Sistema_alunos.exceptions.RecursoNaoEncontradoException;
 import com.system_alunos.Sistema_alunos.model.Aluno;
+import com.system_alunos.Sistema_alunos.model.Curso;
 import com.system_alunos.Sistema_alunos.repository.AlunoRepository;
+import com.system_alunos.Sistema_alunos.repository.CursoRepository;
 import com.system_alunos.Sistema_alunos.service.AlunoService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +26,10 @@ import java.util.Optional;
 	class AlunoServiceTests{
 
 		@Mock
-		private AlunoRepository repository;
+		private AlunoRepository alunoRepository;
+
+		@Mock
+		private CursoRepository cursoRepository;
 
 		@InjectMocks
 		private AlunoService service;
@@ -35,7 +41,7 @@ import java.util.Optional;
 			aluno.setId(1L);
 			aluno.setNome("Roberto");
 
-			when(repository.findById(1L)).thenReturn(Optional.of(aluno));
+			when(alunoRepository.findById(1L)).thenReturn(Optional.of(aluno));
 
 			Aluno resultado = service.buscar(1L);
 
@@ -43,12 +49,37 @@ import java.util.Optional;
 		}
 
 		@Test
-		void deveLancarExcecaoQuandoNaoExistir(){
+		void deveLancarExcecaoQuandoAlunoNaoExistir(){
 
-			when(repository.findById(1L)).thenReturn(Optional.empty());
+			when(alunoRepository.findById(1L)).thenReturn(Optional.empty());
 
 			assertThrows(AlunoNotFoundException.class,
 					() -> service.buscar(1L));
+		}
+
+		@Test
+		void deveLancarExcecaoQuandoCursoNaoExistir(){
+			when(cursoRepository.findById(999L)).thenReturn(Optional.empty());
+
+			assertThrows(RecursoNaoEncontradoException.class, () -> {
+				service.cadastrar("Claudete", 9, 999L);
+			});
+
+		}
+		@Test
+		void deveRetornarCursoQuandoExistir(){
+
+			Curso curso = new Curso();
+			curso.setId(1L);
+			curso.setNome("Java");
+
+			when(cursoRepository.findById(1L)).thenReturn(Optional.of(curso));
+
+			when(alunoRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+			assertDoesNotThrow(() -> {
+				service.cadastrar("Joao", 2, 1L);
+			});
 		}
 
 	}
