@@ -24,7 +24,7 @@ public class AlunoService {
         this.cursoRepository = cursoRepository;
     }
 
-    public void cadastrar(String nome, double nota, Long cursoId){
+    public Aluno cadastrar(String nome, double nota, Long cursoId){
        if (repository.existsByNomeIgnoreCase(nome)) {
            throw new AlunoAlreadyExistException("Aluno ja existe");
        }
@@ -32,7 +32,7 @@ public class AlunoService {
        Curso curso = cursoRepository.findById(cursoId).
                orElseThrow(() -> new RecursoNaoEncontradoException("Curso nao encontrado"));
 
-        repository.save(new Aluno(nome, nota, curso));
+        return repository.save(new Aluno(nome, nota, curso));
 
    }
 
@@ -46,10 +46,11 @@ public class AlunoService {
         .orElseThrow(() -> new AlunoNotFoundException("Aluno nao encontrado"));
     }
 
-    public void atualizarNota(Long id, double nota){
+    public Aluno atualizarNota(Long id, double nota){
        Aluno aluno = buscar(id);
        aluno.setNota(nota);
-       repository.save(aluno);
+
+       return repository.save(aluno);
     }
 
     public void remover(Long id){
