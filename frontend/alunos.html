@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Sistemas de Alunos</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+
+    <header class="navbar">
+      <h1>Sistema de Alunos</h1>
+      <div class="nav-links">
+        <a href="#">GitHub</a>
+        <a href="#">Linkedin</a>
+        <a href="#">Gmail</a>
+      </div>
+    </header>
+
+    <main class="container">
+
+      <section class="card">
+        <div class="card-header">
+        <h2>Alunos</h2>
+        <button class="btn-primary" onclick="carregarAlunos()">
+          Carregar Alunos
+        </button>
+        </div>
+
+        <div id="lista-alunos" class="lista-alunos">
+          <!-- Alunos serão carregados aqui -->
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Cadastrar Alunos</h2>
+
+        <input type="text" id="nome" placeholder="Nome" />
+        <input type="number" id="nota" placeholder="Nota" />
+        <input type="number" id="cursoId" placeholder="Curso ID" />
+
+        <button class="btn-primary" onclick="cadastrarAluno()">Cadastrar</button>
+       </section>
+
+    </main>
+
+    <script src="js/aluno.js"></script>
+  </body>
+</html>
